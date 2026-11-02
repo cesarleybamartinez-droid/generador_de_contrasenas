@@ -1,0 +1,5 @@
+node_modules/
+test-results/
+plwright-report/
+.DS_Store
+*.log

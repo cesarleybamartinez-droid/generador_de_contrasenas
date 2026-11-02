@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Generador de Contraseñas Criptográficamente Seguras con Medidor de Entropía Matemática de Shannon y estándares NIST SP 800-63B.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <!-- Fuentes técnicas: Chakra Petch (geométrica angular) y Fira Code (código) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Fira+Code:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <title>Generador Criptográfico</title>
+</head>
+<body>
+
+  <!-- 1. BARRA DE NAVEGACIÓN SUPERIOR DE ANCHO COMPLETO (TOPBAR) -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-badge">KEYVAULT</span>
+        <div class="brand-info">
+          <h1>Generador de Contraseñas</h1>
+          <p>Motor CSPRNG Web Crypto API // NIST SP 800-63B</p>
+        </div>
+      </div>
+
+      <div class="topbar-controls">
+        <span class="status-pill"><span class="status-dot"></span> ENCRIPTACIÓN ACTIVA</span>
+        <button id="theme-toggle" class="btn-theme-toggle" type="button" aria-label="Cambiar tema visual">
+          <span id="theme-icon" aria-hidden="true">☀️</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. WORKBENCH PRINCIPAL DE DOBLE COLUMNA ASIMÉTRICA -->
+  <main class="workbench">
+    <div class="workbench-grid">
+
+      <!-- PANEL IZQUIERDO: MONITOR TERMINAL DE SALIDA Y TELEMETRÍA -->
+      <section class="vault-monitor" aria-label="Monitor de Contraseña Generada">
+        <div class="monitor-header">
+          <span class="terminal-tag">// OUTPUT_TERMINAL</span>
+          <span class="terminal-cipher">UINT32_ENTROPY</span>
+        </div>
+
+        <div class="password-screen">
+          <input 
+            type="text" 
+            id="password-output" 
+            class="password-output" 
+            readonly 
+            autocomplete="off" 
+            spellcheck="false" 
+            aria-label="Contraseña generada"
+            placeholder="EN ESPERA..."
+          >
+        </div>
+
+        <!-- Botonera de Acción Rápida del Monitor -->
+        <div class="monitor-actions">
+          <button 
+            id="btn-copy" 
+            class="btn-action btn-copy-main" 
+            type="button" 
+            aria-label="Copiar contraseña al portapapeles"
+            disabled
+          >
+            <span>📋 COPIAR CLAVE</span>
+            <span id="copy-tooltip" class="copy-tooltip" role="status" aria-live="polite">¡COPIADO AL PORTAPAPELES!</span>
+          </button>
+
+          <button 
+            id="btn-regenerate" 
+            class="btn-action btn-regen" 
+            type="button" 
+            title="Generar otra combinación" 
+            aria-label="Generar nueva contraseña"
+            disabled
+          >
+            🔄 ROTAR
+          </button>
+        </div>
+
+        <!-- Telemetría de Entropía y Nivel de Blindaje -->
+        <div class="telemetry-panel">
+          <div class="telemetry-row">
+            <div class="telemetry-item">
+              <span class="telemetry-label">NIVEL DE BLINDAJE</span>
+              <span id="strength-label" class="strength-label">EN ESPERA</span>
+            </div>
+            <div class="telemetry-item align-right">
+              <span class="telemetry-label">ENTROPÍA SHANNON</span>
+              <span id="entropy-value" class="entropy-value">0.00 bits</span>
+            </div>
+          </div>
+
+          <div class="strength-bar-track" aria-hidden="true">
+            <div id="strength-bar-fill" class="strength-bar-fill"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PANEL DERECHO: MATRIZ DE PARÁMETROS E INTERRUPTORES -->
+      <section class="control-matrix" aria-label="Parámetros de Configuración">
+        <div class="matrix-header">
+          <h2>PARÁMETROS DE GENERACIÓN</h2>
+        </div>
+
+        <!-- Control de Longitud -->
+        <div class="length-module">
+          <div class="length-header">
+            <label for="length-slider" id="length-label">LONGITUD DE CARACTERES</label>
+            <div class="length-badge">
+              <span id="length-display">16</span>
+              <small>CHARS</small>
+            </div>
+          </div>
+          <input 
+            type="range" 
+            id="length-slider" 
+            class="slider" 
+            min="6" 
+            max="64" 
+            value="16" 
+            aria-labelledby="length-label"
+          >
+          <div class="slider-scale" aria-label="Valores rápidos de longitud">
+            <button type="button" class="scale-mark" data-length="6" style="left: 0%;">06</button>
+            <button type="button" class="scale-mark" data-length="16" style="left: 17.24%;">16</button>
+            <button type="button" class="scale-mark" data-length="32" style="left: 44.83%;">32</button>
+            <button type="button" class="scale-mark" data-length="48" style="left: 72.41%;">48</button>
+            <button type="button" class="scale-mark" data-length="64" style="left: 100%;">64</button>
+          </div>
+        </div>
+
+        <!-- Matriz de Conjuntos de Caracteres -->
+        <fieldset class="options-fieldset">
+          <legend class="options-legend">MATRIZ DE ALFABETOS ACTIVOS</legend>
+          
+          <label class="switch-card" for="opt-uppercase">
+            <input type="checkbox" id="opt-uppercase" name="uppercase" checked>
+            <span class="switch-indicator"></span>
+            <span class="switch-info">
+              <strong class="switch-title">Mayúsculas</strong>
+              <code class="switch-sample">A B C D E F</code>
+            </span>
+          </label>
+
+          <label class="switch-card" for="opt-lowercase">
+            <input type="checkbox" id="opt-lowercase" name="lowercase" checked>
+            <span class="switch-indicator"></span>
+            <span class="switch-info">
+              <strong class="switch-title">Minúsculas</strong>
+              <code class="switch-sample">a b c d e f</code>
+            </span>
+          </label>
+
+          <label class="switch-card" for="opt-numbers">
+            <input type="checkbox" id="opt-numbers" name="numbers" checked>
+            <span class="switch-indicator"></span>
+            <span class="switch-info">
+              <strong class="switch-title">Dígitos Numéricos</strong>
+              <code class="switch-sample">0 1 2 3 4 5</code>
+            </span>
+          </label>
+
+          <label class="switch-card" for="opt-symbols">
+            <input type="checkbox" id="opt-symbols" name="symbols" checked>
+            <span class="switch-indicator"></span>
+            <span class="switch-info">
+              <strong class="switch-title">Símbolos Especiales</strong>
+              <code class="switch-sample">! @ # $ % &</code>
+            </span>
+          </label>
+
+          <label class="switch-card switch-wide" for="opt-ambiguous">
+            <input type="checkbox" id="opt-ambiguous" name="ambiguous">
+            <span class="switch-indicator"></span>
+            <span class="switch-info">
+              <strong class="switch-title">Filtro Anti-Ambigüedad</strong>
+              <code class="switch-sample">Omitir: i l 1 L o 0 O</code>
+            </span>
+          </label>
+        </fieldset>
+
+        <!-- Botón de Ejecución -->
+        <button id="btn-generate" class="btn-execute" type="button">
+          ⚡ EJECUTAR GENERACIÓN CRIPTOGRÁFICA
+        </button>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- 3. BARRA DE ESTADO INFERIOR (STATUS BAR) -->
+  <footer class="statusbar">
+    <div class="statusbar-inner">
+      <small>SOFTWARE: KEYVAULT_03 // ARQUITECTURA DE DOMINIO PURO</small>
+      <small>INGENIERÍA POR <strong>CESAR LEYBA MARTINEZ</strong></small>
+    </div>
+  </footer>
+
+  <script type="module" src="script.js" defer></script>
+</body>
+</html>

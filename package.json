@@ -1,0 +1,17 @@
+{
+  "name": "generador_de_contrasenas",
+  "version": "1.0.0",
+  "description": "Generador de contraseñas criptográficamente seguras con análisis de entropía",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run --exclude \"e2e/**\"",
+    "bench": "node generator.bench.js",
+    "test:e2e": "playwright test",
+    "test:load": "autocannon -c 100 -d 10 http://127.0.0.1:8080"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "autocannon": "^8.0.0",
+    "vitest": "^2.1.0"
+  }
+}

@@ -1,0 +1,672 @@
+/*
+====================================================================================
+PROYECTO 03: KEYVAULT DESIGN SYSTEM
+Arquitectura: Barra Superior + Workbench de 2 Columnas + Barra de Estado Inferior
+Tipografía: Chakra Petch (Geométrica Angular) + Fira Code (Monospace)
+Paleta: Ámbar Criptográfico / Cian Terminal / Obsidiana
+====================================================================================
+*/
+
+:root {
+  /* Modo Claro: "Industrial Titanium & Amber" */
+  --bg-page: #e5e7eb;
+  --bg-panel: #f9fafb;
+  --bg-module: #ffffff;
+  --bg-terminal: #0f172a;
+  
+  --text-primary: #111827;
+  --text-secondary: #374151;
+  --text-muted: #4b5563;
+
+  /* Acento Industrial: Naranja Ámbar / Cobre */
+  --accent-main: #d97706;
+  --accent-hover: #b45309;
+  --accent-soft: #fef3c7;
+  --accent-terminal: #38bdf8;
+
+  --border-color: #1f2937;
+  --border-subtle: #d1d5db;
+
+  --font-ui: 'Chakra Petch', 'Segoe UI', sans-serif;
+  --font-code: 'Fira Code', 'Consolas', monospace;
+}
+
+[data-theme="dark"] {
+  /* Modo Oscuro: "Cyber-Security Operations Center (SOC)" */
+  --bg-page: #07090e;
+  --bg-panel: #0f1420;
+  --bg-module: #161f30;
+  --bg-terminal: #05070b;
+
+  --text-primary: #f3f4f6;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+
+  /* Acento Ciber-Ámbar y Neón */
+  --accent-main: #f59e0b;
+  --accent-hover: #fbbf24;
+  --accent-soft: rgba(245, 158, 11, 0.15);
+  --accent-terminal: #00f5d4;
+
+  --border-color: #334155;
+  --border-subtle: #1e293b;
+}
+
+/* ==========================================================================
+   1. RESET Y ESTRUCTURA DE PANTALLA COMPLETA
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-ui);
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  line-height: 1.4;
+  overflow-x: hidden;
+}
+
+/* ==========================================================================
+   2. TOPBAR (BARRA DE NAVEGACIÓN DE EXTREMO A EXTREMO)
+   ========================================================================== */
+.topbar {
+  width: 100%;
+  background-color: var(--bg-panel);
+  border-bottom: 2px solid var(--border-color);
+  padding: 0.85rem 1.25rem;
+}
+
+.topbar-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand-badge {
+  background-color: var(--accent-main);
+  color: #000000;
+  font-family: var(--font-code);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.65rem;
+  letter-spacing: 1.5px;
+  clip-path: polygon(0 0, 92% 0, 100% 25%, 100% 100%, 8% 100%, 0 75%);
+}
+
+.brand-info h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.brand-info p {
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.topbar-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  background-color: var(--bg-module);
+  border: 1px solid var(--border-color);
+  padding: 0.35rem 0.75rem;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background-color: #10b981;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.btn-theme-toggle {
+  width: 2.5rem;
+  height: 2.5rem;
+  background-color: var(--bg-module);
+  border: 1.5px solid var(--border-color);
+  color: var(--text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  transition: border-color 0.2s ease, transform 0.15s ease;
+}
+
+.btn-theme-toggle:hover {
+  border-color: var(--accent-main);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   3. WORKBENCH PRINCIPAL (CUADRÍCULA DE 2 COLUMNAS)
+   ========================================================================== */
+.workbench {
+  flex: 1;
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.workbench-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+/* ==========================================================================
+   4. COLUMNA IZQUIERDA: MONITOR TERMINAL DE SALIDA
+   ========================================================================== */
+.vault-monitor {
+  background-color: var(--bg-terminal);
+  color: #f8fafc;
+  border: 2px solid var(--border-color);
+  border-top: 4px solid var(--accent-main);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.25rem;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.35);
+  min-width: 0;
+  overflow: hidden;
+}
+
+.monitor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  color: #94a3b8;
+  border-bottom: 1px dashed #334155;
+  padding-bottom: 0.65rem;
+}
+
+.terminal-cipher {
+  color: var(--accent-terminal);
+  font-weight: 700;
+}
+
+.password-screen {
+  background-color: rgba(255, 255, 255, 0.03);
+  border: 1px solid #1e293b;
+  border-left: 4px solid var(--accent-terminal);
+  padding: 1.25rem 1rem;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.password-output {
+  width: 100%;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: var(--font-code);
+  font-size: clamp(0.95rem, 2.8vw, 1.45rem);
+  font-weight: 700;
+  color: var(--accent-terminal);
+  letter-spacing: 1px;
+  text-shadow: 0 0 12px rgba(0, 245, 212, 0.25);
+  text-overflow: ellipsis;
+}
+
+/* Estilo exclusivo para el texto de espera (más compacto y sin desbordar) */
+.password-output::placeholder {
+  font-size: clamp(0.85rem, 3.2vw, 1rem);
+  letter-spacing: 1px;
+  color: #64748b;
+  text-shadow: none;
+  opacity: 1;
+}
+
+/* Acciones del Monitor */
+.monitor-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.75rem;
+}
+
+.btn-action {
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  padding: 0.9rem 1.25rem;
+  cursor: pointer;
+  border: 1.5px solid #334155;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.btn-copy-main {
+  background-color: var(--accent-main);
+  color: #000000;
+  border-color: var(--accent-main);
+  font-weight: 800;
+}
+
+.btn-copy-main:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+}
+
+.btn-regen {
+  background-color: #1e293b;
+  color: #f8fafc;
+}
+
+.btn-regen:hover:not(:disabled) {
+  border-color: var(--accent-terminal);
+  color: var(--accent-terminal);
+}
+
+/* Estilo visual cuando los botones están bloqueados en espera */
+.btn-action:disabled {
+  background-color: #0f172a;
+  color: #475569;
+  border-color: #1e293b;
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* Tooltip de confirmación */
+.copy-tooltip {
+  position: absolute;
+  bottom: 115%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #10b981;
+  color: #000000;
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.copy-tooltip.show {
+  opacity: 1;
+}
+
+/* Telemetría de Seguridad */
+.telemetry-panel {
+  background-color: #090d16;
+  border: 1px solid #1e293b;
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.telemetry-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.telemetry-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.align-right {
+  text-align: right;
+}
+
+.telemetry-label {
+  font-family: var(--font-code);
+  font-size: 0.68rem;
+  color: #94a3b8;
+  letter-spacing: 0.5px;
+}
+
+.strength-label {
+  font-family: var(--font-code);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.entropy-value {
+  font-family: var(--font-code);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.strength-bar-track {
+  width: 100%;
+  height: 12px;
+  background-color: #1e293b;
+  overflow: hidden;
+}
+
+.strength-bar-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 14px,
+    rgba(9, 13, 22, 0.75) 14px,
+    rgba(9, 13, 22, 0.75) 18px
+  );
+}
+
+/* ==========================================================================
+   5. COLUMNA DERECHA: MATRIZ DE CONFIGURACIÓN
+   ========================================================================== */
+.control-matrix {
+  background-color: var(--bg-panel);
+  border: 2px solid var(--border-color);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+}
+
+.matrix-header h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  border-left: 4px solid var(--accent-main);
+  padding-left: 0.65rem;
+}
+
+/* Módulo de Longitud */
+.length-module {
+  background-color: var(--bg-module);
+  border: 1px solid var(--border-subtle);
+  padding: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.length-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.length-header label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.length-badge {
+  background-color: var(--bg-terminal);
+  color: var(--accent-main);
+  font-family: var(--font-code);
+  padding: 0.25rem 0.65rem;
+  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+#length-display {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.length-badge small {
+  font-size: 0.65rem;
+  color: #94a3b8;
+}
+
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: var(--border-subtle);
+  outline: none;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  background: var(--accent-main);
+  border: 2px solid #000000;
+  cursor: pointer;
+}
+
+/* Contenedor con margen lateral de 11px (la mitad de los 22px del cursor) 
+   para que el centro del cursor coincida al milímetro con cada número */
+.slider-scale {
+  position: relative;
+  height: 1.5rem;
+  margin: 0.25rem 11px 0 11px;
+}
+
+.scale-mark {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  background: transparent;
+  border: none;
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.1rem 0.25rem;
+  transition: color 0.15s ease;
+}
+
+.scale-mark:hover {
+  color: var(--accent-main);
+}
+
+/* Línea indicadora vertical encima de cada número */
+.scale-mark::before {
+  content: "|";
+  display: block;
+  font-size: 0.5rem;
+  line-height: 0.6rem;
+  text-align: center;
+  margin-bottom: 2px;
+  color: var(--border-color);
+}
+
+/* Tarjetas de Interruptores (Switches) */
+.options-fieldset {
+  border: none;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.options-legend {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.switch-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background-color: var(--bg-module);
+  border: 1.5px solid var(--border-subtle);
+  padding: 0.8rem 1rem;
+  cursor: pointer;
+  user-select: none;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.switch-card:has(input:checked) {
+  border-color: var(--accent-main);
+  background-color: var(--accent-soft);
+}
+
+.switch-card input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-indicator {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--border-color);
+  background-color: var(--bg-panel);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.switch-card input[type="checkbox"]:checked ~ .switch-indicator {
+  background-color: var(--accent-main);
+  border-color: #000000;
+}
+
+.switch-card input[type="checkbox"]:checked ~ .switch-indicator::after {
+  content: "■";
+  color: #000000;
+  font-size: 0.65rem;
+}
+
+.switch-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.switch-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.switch-sample {
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* Botón Principal de Ejecución */
+.btn-execute {
+  width: 100%;
+  padding: 1.05rem;
+  background-color: var(--accent-main);
+  color: #000000;
+  border: 2px solid #000000;
+  font-family: var(--font-ui);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-execute:hover {
+  background-color: var(--accent-hover);
+}
+
+.btn-execute:active {
+  transform: scale(0.99);
+}
+
+/* ==========================================================================
+   6. BARRA DE ESTADO INFERIOR (STATUS BAR)
+   ========================================================================== */
+.statusbar {
+  width: 100%;
+  background-color: var(--bg-panel);
+  border-top: 1px solid var(--border-color);
+  padding: 0.65rem 1.5rem;
+}
+
+.statusbar-inner {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.statusbar small {
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   7. DISEÑO DE ESCRITORIO (DOS COLUMNAS LADO A LADO)
+   ========================================================================== */
+@media (min-width: 860px) {
+  .vault-monitor,
+  .control-matrix {
+    padding: 1.75rem;
+  }
+
+  .workbench-grid {
+    grid-template-columns: 1.05fr 1fr;
+    align-items: stretch;
+  }
+
+  .options-fieldset {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .switch-wide {
+    grid-column: 1 / -1;
+  }
+}
